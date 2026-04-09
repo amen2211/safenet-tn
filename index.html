@@ -1,0 +1,2562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafeNet TN - Advanced Cybersecurity Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #111111;
+            --bg-tertiary: #1a1a1a;
+            --bg-card: rgba(26, 26, 26, 0.8);
+            --neon-green: #00ff41;
+            --neon-green-dim: rgba(0, 255, 65, 0.1);
+            --neon-green-glow: rgba(0, 255, 65, 0.3);
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+            --text-muted: #666666;
+            --danger: #ff3333;
+            --warning: #ffaa00;
+            --success: #00ff41;
+            --info: #00ccff;
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--neon-green);
+            border-radius: 4px;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 20px var(--neon-green-glow); }
+            50% { box-shadow: 0 0 40px var(--neon-green-glow); }
+        }
+
+        @keyframes scan {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+
+        .animate-pulse {
+            animation: pulse 2s infinite;
+        }
+
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        /* Layout */
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--glass-border);
+            padding: 2rem 1.5rem;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 100;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .logo {
+            width: 40px;
+            height: 40px;
+            background: var(--neon-green);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--bg-primary);
+            font-size: 1.2rem;
+        }
+
+        .brand-text h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .brand-text span {
+            color: var(--neon-green);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .nav-section {
+            margin-bottom: 2rem;
+        }
+
+        .nav-section-title {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            padding-left: 1rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.875rem 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.95rem;
+        }
+
+        .nav-item:hover {
+            background: var(--glass);
+            color: var(--text-primary);
+        }
+
+        .nav-item.active {
+            background: var(--neon-green-dim);
+            color: var(--neon-green);
+            border: 1px solid var(--neon-green);
+        }
+
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        /* Navbar */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            margin-bottom: 2rem;
+            position: sticky;
+            top: 2rem;
+            z-index: 50;
+        }
+
+        .page-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .btn-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            color: var(--text-primary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .btn-icon:hover {
+            background: var(--neon-green-dim);
+            border-color: var(--neon-green);
+            color: var(--neon-green);
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.875rem 1.5rem;
+            border-radius: 12px;
+            border: none;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--neon-green);
+            color: var(--bg-primary);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px var(--neon-green-glow);
+        }
+
+        .btn-secondary {
+            background: var(--glass);
+            color: var(--text-primary);
+            border: 1px solid var(--glass-border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-tertiary);
+            border-color: var(--neon-green);
+        }
+
+        .btn-danger {
+            background: rgba(255, 51, 51, 0.1);
+            color: var(--danger);
+            border: 1px solid var(--danger);
+        }
+
+        /* Cards */
+        .card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: var(--neon-green);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .card-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--neon-green);
+            margin-top: 0.5rem;
+        }
+
+        .card-label {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        /* Grid */
+        .grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .grid-4 {
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        }
+
+        .grid-3 {
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        }
+
+        .grid-2 {
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1rem 1.25rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--neon-green);
+            box-shadow: 0 0 20px var(--neon-green-glow);
+        }
+
+        .form-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        textarea.form-input {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            height: 8px;
+            background: var(--bg-tertiary);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 1rem;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--neon-green);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: scan 2s infinite;
+        }
+
+        /* Status Badges */
+        .badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .badge-success {
+            background: rgba(0, 255, 65, 0.1);
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+
+        .badge-warning {
+            background: rgba(255, 170, 0, 0.1);
+            color: var(--warning);
+            border: 1px solid var(--warning);
+        }
+
+        .badge-danger {
+            background: rgba(255, 51, 51, 0.1);
+            color: var(--danger);
+            border: 1px solid var(--danger);
+        }
+
+        /* Scanner Result */
+        .scan-result {
+            margin-top: 2rem;
+            padding: 2rem;
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
+            display: none;
+        }
+
+        .scan-result.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .scan-result.safe {
+            background: rgba(0, 255, 65, 0.05);
+            border-color: var(--success);
+        }
+
+        .scan-result.suspicious {
+            background: rgba(255, 170, 0, 0.05);
+            border-color: var(--warning);
+        }
+
+        .scan-result.dangerous {
+            background: rgba(255, 51, 51, 0.05);
+            border-color: var(--danger);
+        }
+
+        .result-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .result-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .safe .result-icon {
+            background: var(--neon-green-dim);
+            color: var(--success);
+        }
+
+        .suspicious .result-icon {
+            background: rgba(255, 170, 0, 0.1);
+            color: var(--warning);
+        }
+
+        .dangerous .result-icon {
+            background: rgba(255, 51, 51, 0.1);
+            color: var(--danger);
+        }
+
+        .result-details {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem;
+            background: var(--glass);
+            border-radius: 8px;
+        }
+
+        /* Password Strength */
+        .strength-meter {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .strength-segment {
+            flex: 1;
+            height: 8px;
+            background: var(--bg-tertiary);
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .strength-segment.weak {
+            background: var(--danger);
+        }
+
+        .strength-segment.medium {
+            background: var(--warning);
+        }
+
+        .strength-segment.strong {
+            background: var(--success);
+        }
+
+        /* Quiz Styles */
+        .quiz-option {
+            padding: 1rem 1.5rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .quiz-option:hover {
+            background: var(--glass);
+            border-color: var(--neon-green);
+        }
+
+        .quiz-option.selected {
+            background: var(--neon-green-dim);
+            border-color: var(--neon-green);
+        }
+
+        .quiz-option.correct {
+            background: rgba(0, 255, 65, 0.1);
+            border-color: var(--success);
+        }
+
+        .quiz-option.wrong {
+            background: rgba(255, 51, 51, 0.1);
+            border-color: var(--danger);
+        }
+
+        .option-letter {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--glass);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        /* Reports List */
+        .report-item {
+            padding: 1.5rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+        }
+
+        .report-content h4 {
+            color: var(--neon-green);
+            margin-bottom: 0.5rem;
+        }
+
+        .report-content p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .report-date {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        /* Academy Cards */
+        .lesson-card {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .lesson-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+        }
+
+        .lesson-tag {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.5rem 1rem;
+            background: var(--neon-green);
+            color: var(--bg-primary);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 90vh;
+            display: flex;
+            align-items: center;
+            padding: 4rem 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            max-width: 600px;
+            z-index: 2;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--neon-green-dim);
+            border: 1px solid var(--neon-green);
+            border-radius: 20px;
+            font-size: 0.875rem;
+            color: var(--neon-green);
+            margin-bottom: 1.5rem;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #ffffff 0%, var(--neon-green) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            line-height: 1.8;
+        }
+
+        .hero-image {
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 50%;
+            max-width: 700px;
+            opacity: 0.8;
+            z-index: 1;
+        }
+
+        .hero-image img {
+            width: 100%;
+            height: auto;
+            border-radius: 20px;
+            box-shadow: 0 0 100px var(--neon-green-glow);
+        }
+
+        /* Features Section */
+        .features {
+            padding: 6rem 2rem;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .section-header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .feature-card {
+            text-align: center;
+            padding: 2.5rem;
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1.5rem;
+            background: var(--neon-green-dim);
+            border: 1px solid var(--neon-green);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: var(--neon-green);
+        }
+
+        .feature-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* How It Works */
+        .how-it-works {
+            padding: 6rem 2rem;
+            background: var(--bg-secondary);
+        }
+
+        .steps {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .step {
+            flex: 1;
+            min-width: 250px;
+            max-width: 300px;
+            text-align: center;
+            position: relative;
+        }
+
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: var(--neon-green);
+            color: var(--bg-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0 auto 1.5rem;
+        }
+
+        .step h3 {
+            margin-bottom: 1rem;
+        }
+
+        .step p {
+            color: var(--text-secondary);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--glass-border);
+            padding: 4rem 2rem 2rem;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 3rem;
+        }
+
+        .footer-brand {
+            max-width: 300px;
+        }
+
+        .footer-brand h3 {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .footer-brand p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .footer-links h4 {
+            margin-bottom: 1rem;
+            color: var(--neon-green);
+        }
+
+        .footer-links a {
+            display: block;
+            color: var(--text-secondary);
+            text-decoration: none;
+            margin-bottom: 0.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--neon-green);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            margin-top: 3rem;
+            border-top: 1px solid var(--glass-border);
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        /* Mobile Menu Toggle */
+        .menu-toggle {
+            display: none;
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 200;
+            width: 50px;
+            height: 50px;
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            color: var(--neon-green);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .hero h1 {
+                font-size: 3rem;
+            }
+            
+            .hero-image {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 5rem 1rem 2rem;
+            }
+
+            .hero {
+                padding: 2rem 1rem;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .grid-4, .grid-3, .grid-2 {
+                grid-template-columns: 1fr;
+            }
+
+            .navbar {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+        }
+
+        /* Page Sections */
+        .page {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* Landing Page Specific */
+        .landing-page {
+            margin-left: 0;
+            padding: 0;
+        }
+
+        .landing-page .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            margin: 1rem;
+            z-index: 100;
+        }
+
+        /* Stats Cards */
+        .stat-card {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--neon-green);
+            box-shadow: 0 0 20px var(--neon-green);
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--neon-green-dim);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--neon-green);
+            font-size: 1.5rem;
+        }
+
+        /* Activity List */
+        .activity-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .activity-icon.scan {
+            background: rgba(0, 204, 255, 0.1);
+            color: var(--info);
+        }
+
+        .activity-icon.threat {
+            background: rgba(255, 51, 51, 0.1);
+            color: var(--danger);
+        }
+
+        .activity-icon.report {
+            background: rgba(255, 170, 0, 0.1);
+            color: var(--warning);
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-content h4 {
+            font-size: 0.95rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .activity-content p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .activity-time {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 2rem;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--bg-secondary);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 100%;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header h3 {
+            font-size: 1.5rem;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close-btn:hover {
+            color: var(--neon-green);
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            padding: 1rem 1.5rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transform: translateX(150%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.success {
+            border-color: var(--success);
+        }
+
+        .toast.error {
+            border-color: var(--danger);
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--glass-border);
+            border-top-color: var(--neon-green);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(10, 10, 10, 0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 1rem;
+            z-index: 999;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .loading-text {
+            color: var(--neon-green);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-muted);
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        /* Score Display */
+        .score-display {
+            text-align: center;
+            padding: 3rem;
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 4px solid var(--neon-green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            position: relative;
+        }
+
+        .score-value {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--neon-green);
+        }
+
+        .score-label {
+            color: var(--text-secondary);
+        }
+
+        /* Password Generator */
+        .generated-password {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--bg-tertiary);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            word-break: break-all;
+            border: 1px solid var(--glass-border);
+        }
+
+        /* Check List */
+        .check-list {
+            list-style: none;
+            margin-top: 1rem;
+        }
+
+        .check-list li {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .check-list li.met {
+            color: var(--success);
+        }
+
+        .check-list li::before {
+            content: '○';
+            color: var(--text-muted);
+        }
+
+        .check-list li.met::before {
+            content: '●';
+            color: var(--success);
+        }
+
+        /* Matrix Background Effect */
+        .matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.03;
+        }
+    </style>
+</head>
+<body>
+    <canvas class="matrix-bg" id="matrixCanvas"></canvas>
+
+    <!-- Mobile Menu Toggle -->
+    <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <div class="loading-text">Analyzing...</div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <span id="toastMessage"></span>
+    </div>
+
+    <!-- Landing Page -->
+    <div id="landingPage" class="page active">
+        <nav class="navbar" style="position: fixed; top: 0; left: 0; right: 0; margin: 1rem; z-index: 100;">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <div class="logo">S</div>
+                <div>
+                    <h1 style="font-size: 1.25rem;">SafeNet TN</h1>
+                    <span style="color: var(--neon-green); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px;">Cybersecurity</span>
+                </div>
+            </div>
+            <button class="btn btn-primary" onclick="enterApp()">Enter Platform</button>
+        </nav>
+
+        <section class="hero">
+            <div class="hero-content animate-fade-in">
+                <div class="hero-badge">
+                    <span style="color: var(--neon-green);">●</span>
+                    Advanced Threat Detection
+                </div>
+                <h1>Protect Your Digital Identity</h1>
+                <p>SafeNet TN provides enterprise-grade cybersecurity tools to detect scams, analyze suspicious links, and strengthen your digital defenses against modern threats.</p>
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <button class="btn btn-primary" onclick="enterApp()">Get Started</button>
+                    <button class="btn btn-secondary" onclick="document.getElementById('features').scrollIntoView({behavior: 'smooth'})">Learn More</button>
+                </div>
+                <div style="margin-top: 2rem; padding: 1rem; background: var(--glass); border-radius: 12px; border: 1px solid var(--glass-border); text-align: center;">
+                    <p style="color: var(--text-secondary); font-size: 0.9rem;"><span style="color: var(--neon-green); font-weight: 600;">●</span> Also available on Android – Download from Google Play Store</p>
+                </div>
+            </div>
+            <div class="hero-image animate-float">
+                <img src="https://kimi-web-img.moonshot.cn/img/wallpapers.com/dd6b77e75adfb4fec01b100d7df978fda7918737.jpg" alt="Cybersecurity">
+            </div>
+        </section>
+
+        <section class="features" id="features">
+            <div class="section-header">
+                <h2>Comprehensive Security Suite</h2>
+                <p>Everything you need to stay protected in the digital world</p>
+            </div>
+            <div class="grid grid-4">
+                <div class="card feature-card animate-fade-in">
+                    <div class="feature-icon">◉</div>
+                    <h3>Link Scanner</h3>
+                    <p>Instantly analyze URLs for phishing attempts, malware, and suspicious patterns using advanced heuristics.</p>
+                </div>
+                <div class="card feature-card animate-fade-in">
+                    <div class="feature-icon">🔒</div>
+                    <h3>Password Analyzer</h3>
+                    <p>Evaluate password strength and generate secure passwords that resist brute force attacks.</p>
+                </div>
+                <div class="card feature-card animate-fade-in">
+                    <div class="feature-icon">⚠</div>
+                    <h3>Scam Reporting</h3>
+                    <p>Report suspicious websites and help protect the community from emerging threats.</p>
+                </div>
+                <div class="card feature-card animate-fade-in">
+                    <div class="feature-icon">📚</div>
+                    <h3>Cyber Academy</h3>
+                    <p>Learn about phishing, social engineering, and best practices through interactive lessons.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="how-it-works">
+            <div class="section-header">
+                <h2>How It Works</h2>
+                <p>Three simple steps to enhanced security</p>
+            </div>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Scan</h3>
+                    <p>Enter suspicious URLs or passwords into our analysis engine</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Analyze</h3>
+                    <p>Our algorithms check against multiple threat databases and patterns</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Protect</h3>
+                    <p>Receive detailed reports and actionable security recommendations</p>
+                </div>
+            </div>
+        </section>
+
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3><div class="logo" style="display: inline-flex; margin-right: 0.5rem;">S</div>SafeNet TN</h3>
+                    <p>Advanced cybersecurity platform protecting users from digital threats through intelligent analysis and education.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Platform</h4>
+                    <a href="#" onclick="enterApp(); return false;">Dashboard</a>
+                    <a href="#" onclick="enterApp(); showPage('scanner'); return false;">Link Scanner</a>
+                    <a href="#" onclick="enterApp(); showPage('password'); return false;">Password Tool</a>
+                </div>
+                <div class="footer-links">
+                    <h4>Resources</h4>
+                    <a href="#" onclick="enterApp(); showPage('academy'); return false;">Cyber Academy</a>
+                    <a href="#" onclick="enterApp(); showPage('quiz'); return false;">Security Quiz</a>
+                    <a href="#" onclick="enterApp(); showPage('reports'); return false;">Report Scam</a>
+                </div>
+                <div class="footer-links">
+                    <h4>Legal</h4>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Contact</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 SafeNet TN. All rights reserved. | Secure by Design</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Main App -->
+    <div id="appContainer" class="app-container" style="display: none;">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">S</div>
+                <div class="brand-text">
+                    <h1>SafeNet TN</h1>
+                    <span>Cybersecurity</span>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Overview</div>
+                <a href="#" class="nav-item active" onclick="showPage('dashboard'); return false;">
+                    <span class="nav-icon">◈</span>
+                    Dashboard
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Security Tools</div>
+                <a href="#" class="nav-item" onclick="showPage('scanner'); return false;">
+                    <span class="nav-icon">◉</span>
+                    Link Scanner
+                </a>
+                <a href="#" class="nav-item" onclick="showPage('password'); return false;">
+                    <span class="nav-icon">🔒</span>
+                    Password Analyzer
+                </a>
+                <a href="#" class="nav-item" onclick="showPage('reports'); return false;">
+                    <span class="nav-icon">⚠</span>
+                    Scam Reports
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Education</div>
+                <a href="#" class="nav-item" onclick="showPage('academy'); return false;">
+                    <span class="nav-icon">📚</span>
+                    Cyber Academy
+                </a>
+                <a href="#" class="nav-item" onclick="showPage('quiz'); return false;">
+                    <span class="nav-icon">?</span>
+                    Security Quiz
+                </a>
+            </div>
+
+            <div class="nav-section" style="margin-top: auto; padding-top: 2rem; border-top: 1px solid var(--glass-border);">
+                <a href="#" class="nav-item" onclick="logout(); return false;">
+                    <span class="nav-icon">←</span>
+                    Exit to Landing
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard Page -->
+            <div id="dashboard" class="page active">
+                <div class="navbar">
+                    <h2 class="page-title">Security Dashboard</h2>
+                    <div class="nav-actions">
+                        <button class="btn-icon" onclick="refreshStats()" title="Refresh">↻</button>
+                        <button class="btn-icon" onclick="clearAllData()" title="Clear Data">🗑</button>
+                    </div>
+                </div>
+
+                <div class="grid grid-4" style="margin-bottom: 2rem;">
+                    <div class="card stat-card">
+                        <div class="card-header">
+                            <span class="card-label">Links Scanned</span>
+                            <div class="stat-icon">◉</div>
+                        </div>
+                        <div class="card-value" id="statScanned">0</div>
+                        <div class="progress-container">
+                            <div class="progress-bar" style="width: 75%"></div>
+                        </div>
+                    </div>
+                    <div class="card stat-card">
+                        <div class="card-header">
+                            <span class="card-label">Threats Detected</span>
+                            <div class="stat-icon" style="background: rgba(255, 51, 51, 0.1); color: var(--danger);">⚠</div>
+                        </div>
+                        <div class="card-value" id="statThreats" style="color: var(--danger);">0</div>
+                        <div class="progress-container">
+                            <div class="progress-bar" id="threatBar" style="width: 0%; background: var(--danger);"></div>
+                        </div>
+                    </div>
+                    <div class="card stat-card">
+                        <div class="card-header">
+                            <span class="card-label">Reports Submitted</span>
+                            <div class="stat-icon" style="background: rgba(255, 170, 0, 0.1); color: var(--warning);">📝</div>
+                        </div>
+                        <div class="card-value" id="statReports" style="color: var(--warning);">0</div>
+                    </div>
+                    <div class="card stat-card">
+                        <div class="card-header">
+                            <span class="card-label">Security Score</span>
+                            <div class="stat-icon" style="background: rgba(0, 204, 255, 0.1); color: var(--info);">★</div>
+                        </div>
+                        <div class="card-value" id="statScore" style="color: var(--info);">100%</div>
+                    </div>
+                </div>
+
+                <div class="grid grid-2">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Recent Activity</h3>
+                            <button class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.8rem;" onclick="clearActivity()">Clear</button>
+                        </div>
+                        <div class="activity-list" id="activityList">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">📊</div>
+                                <p>No recent activity</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Quick Actions</h3>
+                        </div>
+                        <div style="display: grid; gap: 1rem;">
+                            <button class="btn btn-primary" onclick="showPage('scanner')" style="justify-content: center;">
+                                Scan a Link
+                            </button>
+                            <button class="btn btn-secondary" onclick="showPage('password')" style="justify-content: center;">
+                                Check Password Strength
+                            </button>
+                            <button class="btn btn-secondary" onclick="showPage('reports')" style="justify-content: center;">
+                                Report Suspicious Site
+                            </button>
+                            <button class="btn btn-secondary" onclick="showPage('quiz')" style="justify-content: center;">
+                                Take Security Quiz
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Link Scanner Page -->
+            <div id="scanner" class="page">
+                <div class="navbar">
+                    <h2 class="page-title">Link Scanner</h2>
+                </div>
+
+                <div class="card" style="max-width: 800px; margin: 0 auto;">
+                    <div style="text-align: center; margin-bottom: 2rem;">
+                        <div style="width: 80px; height: 80px; background: var(--neon-green-dim); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; color: var(--neon-green); font-size: 2rem;">◉</div>
+                        <h3>Analyze Suspicious URLs</h3>
+                        <p style="color: var(--text-secondary);">Enter a URL to check for phishing, malware, and security risks</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Enter URL to Scan</label>
+                        <div style="display: flex; gap: 1rem;">
+                            <input type="text" class="form-input" id="scanUrl" placeholder="https://example.com" style="flex: 1;">
+                            <button class="btn btn-primary" onclick="scanLink()">Scan</button>
+                        </div>
+                    </div>
+
+                    <div id="scanResult" class="scan-result">
+                        <div class="result-header">
+                            <div class="result-icon" id="resultIcon">✓</div>
+                            <div>
+                                <h3 id="resultTitle">Analysis Complete</h3>
+                                <p id="resultSubtitle" style="color: var(--text-secondary);">Detailed report below</p>
+                            </div>
+                            <span class="badge" id="resultBadge">Safe</span>
+                        </div>
+                        <div class="result-details">
+                            <div class="detail-item">
+                                <span>Risk Score</span>
+                                <span id="riskScore" style="font-weight: 600;">0%</span>
+                            </div>
+                            <div class="detail-item">
+                                <span>HTTPS Status</span>
+                                <span id="httpsStatus">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <span>Domain Age</span>
+                                <span id="domainAge">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <span>Suspicious Keywords</span>
+                                <span id="suspiciousKeywords">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <span>URL Length</span>
+                                <span id="urlLength">-</span>
+                            </div>
+                        </div>
+                        <div style="margin-top: 1.5rem; padding: 1rem; background: var(--glass); border-radius: 8px;">
+                            <strong>Recommendation:</strong>
+                            <p id="recommendation" style="margin-top: 0.5rem; color: var(--text-secondary);">-</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" style="max-width: 800px; margin: 2rem auto 0;">
+                    <h3 class="card-title">Scan History</h3>
+                    <div id="scanHistory">
+                        <div class="empty-state" style="padding: 2rem;">
+                            <p>No scans yet</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Password Analyzer Page -->
+            <div id="password" class="page">
+                <div class="navbar">
+                    <h2 class="page-title">Password Analyzer</h2>
+                </div>
+
+                <div class="grid grid-2">
+                    <div class="card">
+                        <div style="text-align: center; margin-bottom: 2rem;">
+                            <div style="width: 80px; height: 80px; background: var(--neon-green-dim); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; color: var(--neon-green); font-size: 2rem;">🔒</div>
+                            <h3>Check Password Strength</h3>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Enter Password</label>
+                            <input type="password" class="form-input" id="passwordInput" placeholder="Type your password..." oninput="analyzePassword()">
+                        </div>
+
+                        <div id="strengthResult" style="display: none;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                                <span style="font-weight: 600;">Strength:</span>
+                                <span class="badge" id="strengthBadge">Weak</span>
+                            </div>
+                            <div class="strength-meter" id="strengthMeter">
+                                <div class="strength-segment"></div>
+                                <div class="strength-segment"></div>
+                                <div class="strength-segment"></div>
+                                <div class="strength-segment"></div>
+                            </div>
+                            <ul class="check-list" id="passwordChecks">
+                                <li id="checkLength">At least 12 characters</li>
+                                <li id="checkUpper">Uppercase letters (A-Z)</li>
+                                <li id="checkLower">Lowercase letters (a-z)</li>
+                                <li id="checkNumber">Numbers (0-9)</li>
+                                <li id="checkSymbol">Special characters (!@#$...)</li>
+                            </ul>
+                            <div style="margin-top: 1.5rem; padding: 1rem; background: var(--glass); border-radius: 8px;">
+                                <strong>Time to Crack:</strong>
+                                <p id="crackTime" style="margin-top: 0.5rem; color: var(--neon-green); font-family: 'JetBrains Mono', monospace;">-</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div style="text-align: center; margin-bottom: 2rem;">
+                            <div style="width: 80px; height: 80px; background: rgba(0, 204, 255, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; color: var(--info); font-size: 2rem;">⚡</div>
+                            <h3>Generate Strong Password</h3>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Password Length: <span id="lengthValue">16</span></label>
+                            <input type="range" class="form-input" id="passwordLength" min="8" max="32" value="16" oninput="document.getElementById('lengthValue').textContent = this.value">
+                        </div>
+
+                        <div style="display: grid; gap: 0.75rem; margin-bottom: 1.5rem;">
+                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                <input type="checkbox" id="includeUpper" checked style="accent-color: var(--neon-green);">
+                                <span>Include Uppercase (A-Z)</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                <input type="checkbox" id="includeLower" checked style="accent-color: var(--neon-green);">
+                                <span>Include Lowercase (a-z)</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                <input type="checkbox" id="includeNumbers" checked style="accent-color: var(--neon-green);">
+                                <span>Include Numbers (0-9)</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                <input type="checkbox" id="includeSymbols" checked style="accent-color: var(--neon-green);">
+                                <span>Include Symbols (!@#$...)</span>
+                            </label>
+                        </div>
+
+                        <button class="btn btn-primary" onclick="generatePassword()" style="width: 100%; margin-bottom: 1rem;">Generate Password</button>
+
+                        <div id="generatedPasswordContainer" style="display: none;">
+                            <label class="form-label">Generated Password:</label>
+                            <div class="generated-password" id="generatedPassword"></div>
+                            <button class="btn btn-secondary" onclick="copyPassword()" style="width: 100%; margin-top: 0.5rem;">Copy to Clipboard</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scam Reports Page -->
+            <div id="reports" class="page">
+                <div class="navbar">
+                    <h2 class="page-title">Scam Reports</h2>
+                    <button class="btn btn-primary" onclick="openModal('reportModal')">+ New Report</button>
+                </div>
+
+                <div class="grid grid-2">
+                    <div class="card">
+                        <h3 class="card-title">Submit a Report</h3>
+                        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Help protect others by reporting suspicious websites or phishing attempts.</p>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Suspicious URL</label>
+                            <input type="text" class="form-input" id="reportUrl" placeholder="https://suspicious-site.com">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Description</label>
+                            <textarea class="form-input" id="reportDesc" placeholder="Describe what happened..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Type of Scam</label>
+                            <select class="form-input" id="reportType">
+                                <option value="phishing">Phishing</option>
+                                <option value="malware">Malware Distribution</option>
+                                <option value="fraud">Financial Fraud</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary" onclick="submitReport()" style="width: 100%;">Submit Report</button>
+                    </div>
+
+                    <div class="card">
+                        <h3 class="card-title">Recent Reports</h3>
+                        <div id="reportsList" style="max-height: 500px; overflow-y: auto;">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">📝</div>
+                                <p>No reports submitted yet</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cyber Academy Page -->
+            <div id="academy" class="page">
+                <div class="navbar">
+                    <h2 class="page-title">Cyber Academy</h2>
+                </div>
+
+                <div class="section-header" style="text-align: left; margin-bottom: 2rem;">
+                    <p style="color: var(--text-secondary);">Learn essential cybersecurity skills to protect yourself online</p>
+                </div>
+
+                <div class="grid grid-3">
+                    <div class="card lesson-card">
+                        <img src="https://kimi-web-img.moonshot.cn/img/www.fortinet.com/ec705baeed0350c536f106859396e4a2ef61ea17.jpg" alt="Phishing" class="lesson-image">
+                        <span class="lesson-tag">Essential</span>
+                        <h3 class="card-title">Phishing Awareness</h3>
+                        <p style="color: var(--text-secondary); margin-bottom: 1rem;">Learn to identify phishing emails, fake websites, and social engineering tactics used by cybercriminals.</p>
+                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
+                            <span class="badge badge-success" style="font-size: 0.7rem;">Email Security</span>
+                            <span class="badge badge-warning" style="font-size: 0.7rem;">Recognition</span>
+                        </div>
+                        <button class="btn btn-secondary" style="width: 100%;" onclick="showToast('Lesson content loading...')">Start Lesson</button>
+                    </div>
+
+                    <div class="card lesson-card">
+                        <img src="https://kimi-web-img.moonshot.cn/img/static.vecteezy.com/c984d3a462eacc431ba4554772cdc434ec744678.jpg" alt="Password Security" class="lesson-image">
+                        <span class="lesson-tag">Advanced</span>
+                        <h3 class="card-title">Password Security</h3>
+                        <p style="color: var(--text-secondary); margin-bottom: 1rem;">Master the art of creating unbreakable passwords and understand multi-factor authentication.</p>
+                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
+                            <span class="badge badge-success" style="font-size: 0.7rem;">MFA</span>
+                            <span class="badge badge-warning" style="font-size: 0.7rem;">Management</span>
+                        </div>
+                        <button class="btn btn-secondary" style="width: 100%;" onclick="showToast('Lesson content loading...')">Start Lesson</button>
+                    </div>
+
+                    <div class="card lesson-card">
+                        <img src="https://kimi-web-img.moonshot.cn/img/thumbs.dreamstime.com/5ea6669f58a429faec6a0238e4717dbc5990021a.jpg" alt="Social Engineering" class="lesson-image">
+                        <span class="lesson-tag">Expert</span>
+                        <h3 class="card-title">Social Engineering</h3>
+                        <p style="color: var(--text-secondary); margin-bottom: 1rem;">Understand psychological manipulation techniques and how to defend against them.</p>
+                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
+                            <span class="badge badge-danger" style="font-size: 0.7rem;">Psychology</span>
+                            <span class="badge badge-warning" style="font-size: 0.7rem;">Defense</span>
+                        </div>
+                        <button class="btn btn-secondary" style="width: 100%;" onclick="showToast('Lesson content loading...')">Start Lesson</button>
+                    </div>
+
+                    <div class="card lesson-card">
+                        <img src="https://kimi-web-img.moonshot.cn/img/thumbs.dreamstime.com/92ef12a2a00494324b6c9264fceaba90a816247a.jpg" alt="Network Security" class="lesson-image">
+                        <span class="lesson-tag">Technical</span>
+                        <h3 class="card-title">Network Security Basics</h3>
+                        <p style="color: var(--text-secondary); margin-bottom: 1rem;">Learn about VPNs, firewalls, and securing your home network from intruders.</p>
+                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
+                            <span class="badge badge-success" style="font-size: 0.7rem;">VPN</span>
+                            <span class="badge badge-warning" style="font-size: 0.7rem;">WiFi</span>
+                        </div>
+                        <button class="btn btn-secondary" style="width: 100%;" onclick="showToast('Lesson content loading...')">Start Lesson</button>
+                    </div>
+
+                    <div class="card lesson-card">
+                        <img src="https://kimi-web-img.moonshot.cn/img/media.istockphoto.com/f370b2da082bc2a6069b6b1a2b880850eea0e811.jpg" alt="Mobile Security" class="lesson-image">
+                        <span class="lesson-tag">Mobile</span>
+                        <h3 class="card-title">Mobile Device Security</h3>
+                        <p style="color: var(--text-secondary); margin-bottom: 1rem;">Protect your smartphone and tablets from malware, theft, and unauthorized access.</p>
+                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
+                            <span class="badge badge-success" style="font-size: 0.7rem;">iOS/Android</span>
+                            <span class="badge badge-warning" style="font-size: 0.7rem;">Apps</span>
+                        </div>
+                        <button class="btn btn-secondary" style="width: 100%;" onclick="showToast('Lesson content loading...')">Start Lesson</button>
+                    </div>
+
+                    <div class="card lesson-card">
+                        <img src="https://kimi-web-img.moonshot.cn/img/elements-resized.envatousercontent.com/1021edf982e1cf1a78c9d109d2087449bdcfacc3.jpg" alt="Incident Response" class="lesson-image">
+                        <span class="lesson-tag">Crisis</span>
+                        <h3 class="card-title">Incident Response</h3>
+                        <p style="color: var(--text-secondary); margin-bottom: 1rem;">What to do when you've been hacked: immediate steps and recovery procedures.</p>
+                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
+                            <span class="badge badge-danger" style="font-size: 0.7rem;">Emergency</span>
+                            <span class="badge badge-warning" style="font-size: 0.7rem;">Recovery</span>
+                        </div>
+                        <button class="btn btn-secondary" style="width: 100%;" onclick="showToast('Lesson content loading...')">Start Lesson</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quiz Page -->
+            <div id="quiz" class="page">
+                <div class="navbar">
+                    <h2 class="page-title">Security Quiz</h2>
+                </div>
+
+                <div id="quizContainer">
+                    <div class="card" style="max-width: 800px; margin: 0 auto;">
+                        <div style="text-align: center; margin-bottom: 2rem;">
+                            <div style="width: 80px; height: 80px; background: var(--neon-green-dim); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; color: var(--neon-green); font-size: 2rem;">?</div>
+                            <h3>Test Your Security Knowledge</h3>
+                            <p style="color: var(--text-secondary);">10 questions to assess your cybersecurity awareness</p>
+                        </div>
+
+                        <div style="display: flex; justify-content: center; gap: 2rem; margin-bottom: 2rem; flex-wrap: wrap;">
+                            <div style="text-align: center;">
+                                <div style="font-size: 2rem; font-weight: 700; color: var(--neon-green);" id="quizHighScore">0</div>
+                                <div style="color: var(--text-muted); font-size: 0.875rem;">High Score</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 2rem; font-weight: 700; color: var(--info);" id="quizAttempts">0</div>
+                                <div style="color: var(--text-muted); font-size: 0.875rem;">Attempts</div>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-primary" onclick="startQuiz()" style="width: 100%; padding: 1rem;">Start Quiz</button>
+                    </div>
+                </div>
+
+                <div id="quizQuestion" style="display: none;">
+                    <div class="card" style="max-width: 800px; margin: 0 auto;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                            <span style="color: var(--text-muted);">Question <span id="currentQuestion">1</span>/10</span>
+                            <span class="badge badge-success" id="currentScore">Score: 0</span>
+                        </div>
+                        <div class="progress-container" style="margin-bottom: 2rem;">
+                            <div class="progress-bar" id="quizProgress" style="width: 10%"></div>
+                        </div>
+                        <h3 id="questionText" style="margin-bottom: 2rem; font-size: 1.25rem;">Question text here?</h3>
+                        <div id="optionsContainer">
+                            <!-- Options injected by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <div id="quizResult" style="display: none;">
+                    <div class="card" style="max-width: 600px; margin: 0 auto; text-align: center;">
+                        <div class="score-display">
+                            <div class="score-circle animate-pulse">
+                                <div class="score-value" id="finalScore">0/10</div>
+                            </div>
+                            <h2 id="resultTitle">Quiz Complete!</h2>
+                            <p class="score-label" id="resultMessage">Great job!</p>
+                        </div>
+                        <div style="display: flex; gap: 1rem; justify-content: center;">
+                            <button class="btn btn-primary" onclick="startQuiz()">Try Again</button>
+                            <button class="btn btn-secondary" onclick="showPage('academy')">Study More</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Report Modal -->
+    <div class="modal-overlay" id="reportModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Report Submitted</h3>
+                <button class="close-btn" onclick="closeModal('reportModal')">×</button>
+            </div>
+            <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Thank you for helping keep the internet safe. Your report has been recorded.</p>
+            <button class="btn btn-primary" onclick="closeModal('reportModal')" style="width: 100%;">Close</button>
+        </div>
+    </div>
+
+    <script>
+        // Matrix Background Effect
+        const canvas = document.getElementById('matrixCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*';
+        const fontSize = 14;
+        const columns = canvas.width / fontSize;
+        const drops = [];
+
+        for (let i = 0; i < columns; i++) {
+            drops[i] = 1;
+        }
+
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.fillStyle = '#00ff41';
+            ctx.font = fontSize + 'px monospace';
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = chars.charAt(Math.floor(Math.random() * chars.length));
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+
+        setInterval(drawMatrix, 50);
+
+        // Data Management
+        const Storage = {
+            get: (key) => {
+                const data = localStorage.getItem(`safenet_${key}`);
+                return data ? JSON.parse(data) : null;
+            },
+            set: (key, value) => {
+                localStorage.setItem(`safenet_${key}`, JSON.stringify(value));
+            },
+            init: () => {
+                if (!Storage.get('stats')) {
+                    Storage.set('stats', {
+                        scanned: 0,
+                        threats: 0,
+                        reports: 0,
+                        score: 100
+                    });
+                }
+                if (!Storage.get('activity')) Storage.set('activity', []);
+                if (!Storage.get('scans')) Storage.set('scans', []);
+                if (!Storage.get('reports')) Storage.set('reports', []);
+                if (!Storage.get('quiz')) Storage.set('quiz', { highScore: 0, attempts: 0 });
+            }
+        };
+
+        Storage.init();
+
+        // Navigation
+        function enterApp() {
+            document.getElementById('landingPage').classList.remove('active');
+            document.getElementById('landingPage').style.display = 'none';
+            document.getElementById('appContainer').style.display = 'flex';
+            showPage('dashboard');
+            refreshStats();
+        }
+
+        function logout() {
+            document.getElementById('appContainer').style.display = 'none';
+            document.getElementById('landingPage').style.display = 'block';
+            setTimeout(() => {
+                document.getElementById('landingPage').classList.add('active');
+            }, 10);
+        }
+
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+            
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            event.target.closest('.nav-item')?.classList.add('active');
+            
+            if (pageId === 'dashboard') refreshStats();
+            if (pageId === 'reports') loadReports();
+            if (pageId === 'scanner') loadScanHistory();
+            if (pageId === 'quiz') loadQuizStats();
+            
+            // Close sidebar on mobile
+            if (window.innerWidth <= 768) {
+                document.getElementById('sidebar').classList.remove('open');
+            }
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        // Toast Notification
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMessage').textContent = message;
+            toast.className = `toast ${type} show`;
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Dashboard Functions
+        function refreshStats() {
+            const stats = Storage.get('stats');
+            document.getElementById('statScanned').textContent = stats.scanned;
+            document.getElementById('statThreats').textContent = stats.threats;
+            document.getElementById('statReports').textContent = stats.reports;
+            document.getElementById('statScore').textContent = stats.score + '%';
+            
+            const threatPercent = stats.scanned > 0 ? (stats.threats / stats.scanned) * 100 : 0;
+            document.getElementById('threatBar').style.width = threatPercent + '%';
+            
+            loadActivity();
+        }
+
+        function loadActivity() {
+            const activity = Storage.get('activity') || [];
+            const container = document.getElementById('activityList');
+            
+            if (activity.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📊</div>
+                        <p>No recent activity</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = activity.slice(0, 10).map(item => `
+                <div class="activity-item">
+                    <div class="activity-icon ${item.type}">
+                        ${item.type === 'scan' ? '◉' : item.type === 'threat' ? '⚠' : '📝'}
+                    </div>
+                    <div class="activity-content">
+                        <h4>${item.title}</h4>
+                        <p>${item.description}</p>
+                    </div>
+                    <span class="activity-time">${new Date(item.time).toLocaleTimeString()}</span>
+                </div>
+            `).join('');
+        }
+
+        function addActivity(type, title, description) {
+            const activity = Storage.get('activity') || [];
+            activity.unshift({
+                type,
+                title,
+                description,
+                time: new Date().toISOString()
+            });
+            Storage.set('activity', activity.slice(0, 50));
+        }
+
+        function clearActivity() {
+            Storage.set('activity', []);
+            loadActivity();
+            showToast('Activity cleared');
+        }
+
+        function clearAllData() {
+            if (confirm('Are you sure you want to clear all data? This cannot be undone.')) {
+                localStorage.removeItem('safenet_stats');
+                localStorage.removeItem('safenet_activity');
+                localStorage.removeItem('safenet_scans');
+                localStorage.removeItem('safenet_reports');
+                Storage.init();
+                refreshStats();
+                showToast('All data cleared');
+            }
+        }
+
+        // Link Scanner
+        function scanLink() {
+            const url = document.getElementById('scanUrl').value.trim();
+            if (!url) {
+                showToast('Please enter a URL', 'error');
+                return;
+            }
+
+            document.getElementById('loadingOverlay').classList.add('active');
+            
+            setTimeout(() => {
+                const result = analyzeUrl(url);
+                displayScanResult(result);
+                saveScan(url, result);
+                updateStats(result);
+                addActivity(result.risk > 50 ? 'threat' : 'scan', 
+                    result.risk > 50 ? 'Threat Detected' : 'Link Scanned',
+                    url.substring(0, 50) + '...');
+                
+                document.getElementById('loadingOverlay').classList.remove('active');
+            }, 1500);
+        }
+
+        function analyzeUrl(url) {
+            let risk = 0;
+            const checks = {
+                https: url.startsWith('https://'),
+                suspiciousKeywords: ['login', 'verify', 'account', 'bank', 'free', 'prize', 'winner', 'urgent', 'suspend'],
+                ipAddress: /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/.test(url),
+                excessiveLength: url.length > 100,
+                multipleSubdomains: (url.match(/\./g) || []).length > 3,
+                specialChars: /[^a-zA-Z0-9-._~:/?#[\]@!$&'()*+,;=]/.test(url)
+            };
+
+            if (!checks.https) risk += 30;
+            
+            const foundKeywords = checks.suspiciousKeywords.filter(kw => 
+                url.toLowerCase().includes(kw)
+            );
+            risk += foundKeywords.length * 15;
+            
+            if (checks.ipAddress) risk += 25;
+            if (checks.excessiveLength) risk += 10;
+            if (checks.multipleSubdomains) risk += 15;
+            if (checks.specialChars) risk += 20;
+
+            risk = Math.min(risk, 100);
+
+            let status = 'safe';
+            if (risk > 70) status = 'dangerous';
+            else if (risk > 30) status = 'suspicious';
+
+            return {
+                url,
+                risk,
+                status,
+                checks,
+                foundKeywords,
+                recommendation: status === 'dangerous' ? 
+                    'DO NOT VISIT this website. High probability of phishing or malware.' :
+                    status === 'suspicious' ? 
+                    'Exercise caution. Verify the sender before clicking any links.' :
+                    'This link appears safe, but always verify the source.'
+            };
+        }
+
+        function displayScanResult(result) {
+            const resultDiv = document.getElementById('scanResult');
+            resultDiv.className = `scan-result active ${result.status}`;
+            
+            document.getElementById('resultIcon').textContent = 
+                result.status === 'safe' ? '✓' : result.status === 'suspicious' ? '!' : '✕';
+            document.getElementById('resultTitle').textContent = 
+                result.status === 'safe' ? 'Link Appears Safe' : 
+                result.status === 'suspicious' ? 'Suspicious Link Detected' : 
+                'Dangerous Link Detected';
+            document.getElementById('resultBadge').textContent = 
+                result.status.charAt(0).toUpperCase() + result.status.slice(1);
+            document.getElementById('resultBadge').className = `badge badge-${result.status === 'safe' ? 'success' : result.status === 'suspicious' ? 'warning' : 'danger'}`;
+            
+            document.getElementById('riskScore').textContent = result.risk + '%';
+            document.getElementById('riskScore').style.color = 
+                result.risk > 70 ? 'var(--danger)' : result.risk > 30 ? 'var(--warning)' : 'var(--success)';
+            
+            document.getElementById('httpsStatus').textContent = result.checks.https ? 'Secure (HTTPS)' : 'Not Secure (HTTP)';
+            document.getElementById('httpsStatus').style.color = result.checks.https ? 'var(--success)' : 'var(--danger)';
+            
+            document.getElementById('domainAge').textContent = 'Unable to determine';
+            document.getElementById('suspiciousKeywords').textContent = 
+                result.foundKeywords.length > 0 ? result.foundKeywords.join(', ') : 'None found';
+            document.getElementById('urlLength').textContent = result.url.length + ' characters';
+            document.getElementById('recommendation').textContent = result.recommendation;
+        }
+
+        function saveScan(url, result) {
+            const scans = Storage.get('scans') || [];
+            scans.unshift({
+                url: url.substring(0, 100),
+                status: result.status,
+                risk: result.risk,
+                time: new Date().toISOString()
+            });
+            Storage.set('scans', scans.slice(0, 20));
+            loadScanHistory();
+        }
+
+        function loadScanHistory() {
+            const scans = Storage.get('scans') || [];
+            const container = document.getElementById('scanHistory');
+            
+            if (scans.length === 0) {
+                container.innerHTML = '<div class="empty-state" style="padding: 2rem;"><p>No scans yet</p></div>';
+                return;
+            }
+            
+            container.innerHTML = scans.map(scan => `
+                <div class="report-item">
+                    <div class="report-content">
+                        <h4 style="color: ${scan.status === 'safe' ? 'var(--success)' : scan.status === 'suspicious' ? 'var(--warning)' : 'var(--danger)'};">
+                            ${scan.url}
+                        </h4>
+                        <p>Risk Score: ${scan.risk}% | Status: ${scan.status}</p>
+                        <span class="report-date">${new Date(scan.time).toLocaleString()}</span>
+                    </div>
+                    <span class="badge badge-${scan.status === 'safe' ? 'success' : scan.status === 'suspicious' ? 'warning' : 'danger'}">
+                        ${scan.status}
+                    </span>
+                </div>
+            `).join('');
+        }
+
+        function updateStats(result) {
+            const stats = Storage.get('stats');
+            stats.scanned++;
+            if (result.risk > 50) stats.threats++;
+            stats.score = Math.max(0, 100 - (stats.threats * 5));
+            Storage.set('stats', stats);
+            refreshStats();
+        }
+
+        // Password Analyzer
+        function analyzePassword() {
+            const password = document.getElementById('passwordInput').value;
+            const resultDiv = document.getElementById('strengthResult');
+            
+            if (!password) {
+                resultDiv.style.display = 'none';
+                return;
+            }
+            
+            resultDiv.style.display = 'block';
+            
+            const checks = {
+                length: password.length >= 12,
+                upper: /[A-Z]/.test(password),
+                lower: /[a-z]/.test(password),
+                number: /[0-9]/.test(password),
+                symbol: /[^A-Za-z0-9]/.test(password)
+            };
+            
+            let strength = 0;
+            if (checks.length) strength++;
+            if (checks.upper) strength++;
+            if (checks.lower) strength++;
+            if (checks.number) strength++;
+            if (checks.symbol) strength++;
+            
+            const segments = document.querySelectorAll('.strength-segment');
+            segments.forEach((seg, idx) => {
+                seg.className = 'strength-segment';
+                if (idx < strength) {
+                    if (strength <= 2) seg.classList.add('weak');
+                    else if (strength <= 4) seg.classList.add('medium');
+                    else seg.classList.add('strong');
+                }
+            });
+            
+            const badge = document.getElementById('strengthBadge');
+            if (strength <= 2) {
+                badge.textContent = 'Weak';
+                badge.className = 'badge badge-danger';
+            } else if (strength <= 4) {
+                badge.textContent = 'Medium';
+                badge.className = 'badge badge-warning';
+            } else {
+                badge.textContent = 'Strong';
+                badge.className = 'badge badge-success';
+            }
+            
+            document.getElementById('checkLength').className = checks.length ? 'met' : '';
+            document.getElementById('checkUpper').className = checks.upper ? 'met' : '';
+            document.getElementById('checkLower').className = checks.lower ? 'met' : '';
+            document.getElementById('checkNumber').className = checks.number ? 'met' : '';
+            document.getElementById('checkSymbol').className = checks.symbol ? 'met' : '';
+            
+            // Calculate crack time (simplified estimation)
+            const charset = (checks.upper ? 26 : 0) + (checks.lower ? 26 : 0) + 
+                           (checks.number ? 10 : 0) + (checks.symbol ? 32 : 0);
+            const combinations = Math.pow(charset || 1, password.length);
+            const guessesPerSecond = 10000000000; // 10 billion guesses/sec (powerful GPU)
+            const seconds = combinations / guessesPerSecond;
+            
+            let timeText;
+            if (seconds < 1) timeText = 'Instantly';
+            else if (seconds < 60) timeText = Math.round(seconds) + ' seconds';
+            else if (seconds < 3600) timeText = Math.round(seconds / 60) + ' minutes';
+            else if (seconds < 86400) timeText = Math.round(seconds / 3600) + ' hours';
+            else if (seconds < 31536000) timeText = Math.round(seconds / 86400) + ' days';
+            else if (seconds < 3153600000) timeText = Math.round(seconds / 31536000) + ' years';
+            else timeText = 'Centuries';
+            
+            document.getElementById('crackTime').textContent = timeText;
+        }
+
+        function generatePassword() {
+            const length = parseInt(document.getElementById('passwordLength').value);
+            const includeUpper = document.getElementById('includeUpper').checked;
+            const includeLower = document.getElementById('includeLower').checked;
+            const includeNumbers = document.getElementById('includeNumbers').checked;
+            const includeSymbols = document.getElementById('includeSymbols').checked;
+            
+            let chars = '';
+            if (includeUpper) chars += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            if (includeLower) chars += 'abcdefghijklmnopqrstuvwxyz';
+            if (includeNumbers) chars += '0123456789';
+            if (includeSymbols) chars += '!@#$%^&*()_+-=[]{}|;:,.<>?';
+            
+            if (!chars) {
+                showToast('Please select at least one character type', 'error');
+                return;
+            }
+            
+            let password = '';
+            for (let i = 0; i < length; i++) {
+                password += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            
+            document.getElementById('generatedPassword').textContent = password;
+            document.getElementById('generatedPasswordContainer').style.display = 'block';
+        }
+
+        function copyPassword() {
+            const password = document.getElementById('generatedPassword').textContent;
+            navigator.clipboard.writeText(password).then(() => {
+                showToast('Password copied to clipboard');
+            });
+        }
+
+        // Scam Reports
+        function submitReport() {
+            const url = document.getElementById('reportUrl').value.trim();
+            const desc = document.getElementById('reportDesc').value.trim();
+            const type = document.getElementById('reportType').value;
+            
+            if (!url || !desc) {
+                showToast('Please fill in all fields', 'error');
+                return;
+            }
+            
+            const reports = Storage.get('reports') || [];
+            reports.unshift({
+                url,
+                description: desc,
+                type,
+                time: new Date().toISOString()
+            });
+            Storage.set('reports', reports);
+            
+            const stats = Storage.get('stats');
+            stats.reports++;
+            Storage.set('stats', stats);
+            
+            document.getElementById('reportUrl').value = '';
+            document.getElementById('reportDesc').value = '';
+            
+            openModal('reportModal');
+            loadReports();
+            addActivity('report', 'Scam Reported', url.substring(0, 50) + '...');
+            refreshStats();
+        }
+
+        function loadReports() {
+            const reports = Storage.get('reports') || [];
+            const container = document.getElementById('reportsList');
+            
+            if (reports.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📝</div>
+                        <p>No reports submitted yet</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = reports.map(report => `
+                <div class="report-item">
+                    <div class="report-content">
+                        <h4>${report.url}</h4>
+                        <p>${report.description}</p>
+                        <span class="report-date">${new Date(report.time).toLocaleString()} | Type: ${report.type}</span>
+                    </div>
+                    <span class="badge badge-warning">Pending Review</span>
+                </div>
+            `).join('');
+        }
+
+        // Quiz
+        const quizQuestions = [
+            {
+                question: "What is the most secure way to create passwords?",
+                options: ["Use your birthday", "Use a password manager to generate unique passwords", "Use the same password everywhere", "Write them on a sticky note"],
+                correct: 1
+            },
+            {
+                question: "What does 'HTTPS' in a URL indicate?",
+                options: ["The site is free", "The connection is encrypted", "The site is fast", "The site is new"],
+                correct: 1
+            },
+            {
+                question: "Which of these is a sign of a phishing email?",
+                options: ["Urgent language demanding immediate action", "Perfect grammar and spelling", "From a known contact", "No links included"],
+                correct: 0
+            },
+            {
+                question: "What is two-factor authentication (2FA)?",
+                options: ["Using two passwords", "A second verification step beyond password", "Logging in twice", "Using two devices"],
+                correct: 1
+            },
+            {
+                question: "What should you do if you suspect your account is compromised?",
+                options: ["Wait and see", "Change your password immediately", "Tell your friends", "Delete the account"],
+                correct: 1
+            },
+            {
+                question: "Which Wi-Fi security protocol is most secure?",
+                options: ["WEP", "WPA", "WPA3", "Open network"],
+                correct: 2
+            },
+            {
+                question: "What is social engineering in cybersecurity?",
+                options: ["Building social networks", "Psychological manipulation to gain access", "Engineering software", "Social media marketing"],
+                correct: 1
+            },
+            {
+                question: "How often should you update your software?",
+                options: ["Never", "Only when it stops working", "As soon as updates are available", "Once a year"],
+                correct: 2
+            },
+            {
+                question: "What is a VPN used for?",
+                options: ["Speeding up internet", "Encrypting internet connection", "Blocking ads", "Increasing Wi-Fi range"],
+                correct: 1
+            },
+            {
+                question: "What should you do with suspicious email attachments?",
+                options: ["Open them to check", "Delete them without opening", "Forward to friends", "Save to desktop"],
+                correct: 1
+            }
+        ];
+
+        let currentQuestion = 0;
+        let quizScore = 0;
+
+        function loadQuizStats() {
+            const quiz = Storage.get('quiz');
+            document.getElementById('quizHighScore').textContent = quiz.highScore;
+            document.getElementById('quizAttempts').textContent = quiz.attempts;
+        }
+
+        function startQuiz() {
+            currentQuestion = 0;
+            quizScore = 0;
+            document.getElementById('quizContainer').style.display = 'none';
+            document.getElementById('quizResult').style.display = 'none';
+            document.getElementById('quizQuestion').style.display = 'block';
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const q = quizQuestions[currentQuestion];
+            document.getElementById('currentQuestion').textContent = currentQuestion + 1;
+            document.getElementById('currentScore').textContent = `Score: ${quizScore}`;
+            document.getElementById('quizProgress').style.width = ((currentQuestion + 1) / 10) * 100 + '%';
+            document.getElementById('questionText').textContent = q.question;
+            
+            const container = document.getElementById('optionsContainer');
+            container.innerHTML = q.options.map((opt, idx) => `
+                <div class="quiz-option" onclick="selectOption(${idx})">
+                    <div class="option-letter">${String.fromCharCode(65 + idx)}</div>
+                    <span>${opt}</span>
+                </div>
+            `).join('');
+        }
+
+        function selectOption(index) {
+            const q = quizQuestions[currentQuestion];
+            const options = document.querySelectorAll('.quiz-option');
+            
+            options.forEach((opt, idx) => {
+                opt.style.pointerEvents = 'none';
+                if (idx === q.correct) {
+                    opt.classList.add('correct');
+                } else if (idx === index && idx !== q.correct) {
+                    opt.classList.add('wrong');
+                }
+            });
+            
+            if (index === q.correct) {
+                quizScore++;
+                showToast('Correct!', 'success');
+            } else {
+                showToast('Incorrect', 'error');
+            }
+            
+            setTimeout(() => {
+                currentQuestion++;
+                if (currentQuestion < quizQuestions.length) {
+                    showQuestion();
+                } else {
+                    endQuiz();
+                }
+            }, 1500);
+        }
+
+        function endQuiz() {
+            document.getElementById('quizQuestion').style.display = 'none';
+            document.getElementById('quizResult').style.display = 'block';
+            document.getElementById('finalScore').textContent = `${quizScore}/10`;
+            
+            const quiz = Storage.get('quiz');
+            quiz.attempts++;
+            if (quizScore > quiz.highScore) {
+                quiz.highScore = quizScore;
+                document.getElementById('resultTitle').textContent = 'New High Score!';
+                document.getElementById('resultMessage').textContent = 'Excellent work! You have set a new personal record.';
+            } else {
+                document.getElementById('resultTitle').textContent = 'Quiz Complete!';
+                if (quizScore >= 8) {
+                    document.getElementById('resultMessage').textContent = 'Outstanding! You are a security expert.';
+                } else if (quizScore >= 5) {
+                    document.getElementById('resultMessage').textContent = 'Good job! Keep learning to improve.';
+                } else {
+                    document.getElementById('resultMessage').textContent = 'Keep studying! Security is important.';
+                }
+            }
+            Storage.set('quiz', quiz);
+        }
+
+        // Modal Functions
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // Close modal on outside click
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) {
+                    overlay.classList.remove('active');
+                }
+            });
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check if we should show landing or app (optional: could add session logic)
+        });
+    </script>
+</body>
+</html>
